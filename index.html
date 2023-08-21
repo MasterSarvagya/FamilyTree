@@ -20,12 +20,29 @@
 		#canvas {
 			width: 100%;
 			height: 100%;
-			background-color: black;
 		}
-	</style>
+
+		#center_button {
+			position: absolute;
+			width: 5vw;
+			height: 5vw;
+			top: 85vh;
+			left: 92vw;
+			background-color: blue;
+			border: 0px;
+			border-radius: 50px;
+			color: white;
+			cursor: pointer;
+			transition: transform 0.5s;
+		}
+		#center_button:hover {
+			transform: scale(1.2);
+		}
+	</style> 
 </head>
 <body>
 
+	<button id="center_button"><img src="images/center.png" style="object-fit:contain;width:70%;" onclick="centerCanvas()"></button>
 	<canvas id="canvas"></canvas>
 
 	<script type="text/javascript">
@@ -41,33 +58,21 @@
 
 		function draw()
 		{
-			canvas.width = window.innerWidth
-			canvas.height = window.innerHeight
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
 
     // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
-			ctx.translate( window.innerWidth / 2, window.innerHeight / 2 )
-			ctx.scale(cameraZoom, cameraZoom)
-			ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y )
-			ctx.clearRect(0,0, window.innerWidth, window.innerHeight)
-			ctx.fillStyle = "#991111"
-			drawRect(-50,-50,100,100)
+			ctx.translate( window.innerWidth / 2, window.innerHeight / 2 );
+			ctx.scale(cameraZoom, cameraZoom);
+			ctx.translate( -window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y );
+			ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
 
-			ctx.fillStyle = "#eecc77"
-			drawRect(-35,-35,20,20)
-			drawRect(15,-35,20,20)
-			drawRect(-35,15,70,20)
+			// drawRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
 
-			ctx.fillStyle = "#fff"
-			drawText("Simple Pan and Zoom Canvas", -255, -100, 32, "courier")
-
-			ctx.rotate(-31*Math.PI / 180)
-			ctx.fillStyle = `#${(Math.round(Date.now()/40)%4096).toString(16)}`
-			drawText("Now with touch!", -110, 100, 32, "courier")
-
-			ctx.fillStyle = "#fff"
-			ctx.rotate(31*Math.PI / 180)
-
-			drawText("Wow, you found me!", -260, -2000, 48, "courier")
+			drawCharacterCard(-canvas.width/2 + 25,-canvas.height/2 + 25,"F");
+			drawCharacterCard(canvas.width/2 - 175,-canvas.height/2+ 25,"M");
+			drawCharacterCard(-175,-canvas.height/2+ 25,"M","images/robot.png","Mr. Robot");
+			drawCharacterCard(25,-canvas.height/2+ 25,"F","images/robot.png","Mrs. Robot");
 
 			requestAnimationFrame( draw )
 		}
@@ -92,8 +97,43 @@
 
 		function drawText(text, x, y, size, font)
 		{
-			ctx.font = `${size}px ${font}`
-			ctx.fillText(text, x, y)
+			ctx.font = `${size}px ${font}`;
+			ctx.fillText(text, x, y);
+		}
+
+		function drawCharacterCard(x,y,gender,img_src = "",name = "")
+		{
+			var img = new Image();
+
+			if(gender == "M" || gender == "m"){
+				ctx.strokeStyle = "blue";
+				ctx.fillStyle = "#b7e2fc";
+				img.src = "images/male.png";
+			}
+			
+			else {
+				ctx.strokeStyle = "pink";
+				ctx.fillStyle = "#ffe6ee";
+				img.src = "images/female.png";
+			}
+
+			if (img_src != "")
+				img.src = img_src;
+
+
+			ctx.beginPath();
+			ctx.roundRect(x, y, 150, 200, [25]);
+			ctx.fill();
+			ctx.drawImage(img, x + 25, y + 10, 100, 100);			
+			ctx.stroke();
+
+			ctx.fillStyle = "white"
+			drawText(name,x+(75 - ctx.measureText(name).width/2),y+150,20,"arial");
+		}
+
+		function centerCanvas() {
+			cameraOffset = { x: window.innerWidth/2, y: window.innerHeight/2 };
+			console.log("hello")
 		}
 
 		let isDragging = false
@@ -187,60 +227,7 @@
 		canvas.addEventListener('touchmove', (e) => handleTouch(e, onPointerMove))
 		canvas.addEventListener( 'wheel', (e) => adjustZoom(-e.deltaY*SCROLL_SENSITIVITY))
 
-// Ready, set, go
 		draw()
-
-		// window.onload = function() {
-		// 	var canvas = document.getElementById("canvas");
-		// 	canvas.width = window.innerWidth;
-		// 	canvas.height = window.innerHeight;
-		// 	var context = canvas.getContext('2d');
-
-
-		// 	function draw() {
-		// 		context.strokeStyle = "red";
-		// 		var line_w = 5;
-		// 		context.lineWidth = line_w;
-		// 		// context.strokeRect(line_w/2, line_w/2, window.innerWidth-line_w, window.innerHeight-line_w);
-		// 		context.fillRect(25, 25, 100, 100);
-		// 	}
-
-		// 	function clear() {
-		// 		context.clearRect(0, 0, canvas.width, canvas.height);
-		// 	}
-		// 	var drag = false;
-		// 	var dragStart;
-		// 	var dragEnd;
-		// 	draw()
-		// 	canvas.addEventListener('mousedown', function(event) {
-		// 		dragStart = {
-		// 			x: event.pageX - canvas.offsetLeft,
-		// 			y: event.pageY - canvas.offsetTop
-		// 		}
-
-		// 		drag = true;
-
-		// 	})
-
-		// 	canvas.addEventListener('mousemove', function(event) {
-		// 		if (drag) {
-		// 			dragEnd = {
-		// 				x: event.pageX - canvas.offsetLeft,
-		// 				y: event.pageY - canvas.offsetTop
-		// 			}
-		// 			context.translate(dragEnd.x - dragStart.x, dragEnd.y - dragStart.y);
-		// 			dragStart = dragEnd;
-		// 			clear()
-		// 			draw()
-		// 		}
-
-		// 	})
-
-		// 	canvas.addEventListener('mouseup', function(event) {
-		// 		drag = false;
-		// 	})
-
-		// }
 
 	</script>
 	
