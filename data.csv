@@ -1,6 +1,6 @@
 id,first_name,last_name,gender,partner_id,parent_id
 1,Akbal Bahadur,Srivastava,M,2,-1
-2,Nirmala,Srivastava,F,1,-1
+2,Nirmala,Srivastava,F,1,0
 3,Pankaj,Srivastava,M,4,1
 4,Aparna,Srivastava,F,3,0
 5,Mohak,Srivastava,M,6,3
