@@ -14,14 +14,9 @@ let characterList = [];
 function draw() {
 	prepareCanvas();
 	ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
-
-	// drawRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
-
-	drawCharacterCard(-canvas.width/2 + 25,-canvas.height/2 + 25,"F");
-	drawCharacterCard(canvas.width/2 - 175,-canvas.height/2+ 25,"M");
-	drawCharacterCard(-175,-canvas.height/2+ 25,"M","images/robot.png","Mr. Robot");
-	drawCharacterCard(25,-canvas.height/2+ 25,"F","images/robot.png","Mrs. Robot");
-
+	drawText("",0,0,20,"arial");
+	for(var i = 0; i < characterList.length; i++)
+		drawCharacterCard(characterList[i][0],characterList[i][1],characterList[i][2],characterList[i][3], characterList[i][4].trim());
 	requestAnimationFrame( draw );
 }
 
@@ -71,12 +66,40 @@ function drawCharacterCard(x,y,gender,img_src = "",name = "") {
 	ctx.fill();
 	ctx.drawImage(img, x + 25, y + 10, 100, 100);			
 	ctx.fillStyle = "white";
-	drawText(name,x+(75 - ctx.measureText(name).width/2),y+150,20,"arial");
+	drawText(name.split("\n",2)[0],x+(75 - ctx.measureText(name.split("\n",2)[0]).width/2),y+150,20,"arial");
+	drawText(name.split("\n",2)[1],x+(75 - ctx.measureText(name.split("\n",2)[1]).width/2),y+180,20,"arial");
 	ctx.stroke();
 }
 
-function prepareCharacterList(tree) {
-	console.log(tree);
+function prepareCharacterList(root) {
+	prepareCanvas();
+	let ans = [];
+	let main_queue=[];
+	main_queue.push(root);
+	let temp=[];
+	while (main_queue.length) {
+		let n = main_queue.length;
+		for (let i = 0; i < n; i++) {
+			let cur = main_queue.shift();
+			temp.push(cur);
+			for (let u of cur.child_members)
+				main_queue.push(u);
+		}
+		ans.push(temp);
+		temp=[];
+	}
+	let level = 0;
+	for (let v of ans) {
+		let sib = v.length;
+		let dist = 0;
+		let fact = 1;
+		for (let x of v){
+			dist += 0.5;
+			characterList.push([fact * parseInt(dist) * (canvas.width/sib) - 75,-canvas.height/2 + 25 + level*250,x.gender,"",x.first_name + "\n" + x.last_name]);
+			fact *= -1;
+		}
+		level += 1;
+	}
 }
 
 function centerCanvas() {
