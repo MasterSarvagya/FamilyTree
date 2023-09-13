@@ -10,50 +10,75 @@
 			vertical-align: middle;
 			outline: 0px;
 		}
-
 		body {
 			margin: 0px;
 			padding: 0px;
-			overflow: hidden;
+			font-family: Arial, Helvetica, sans-serif;
 		}
-
-		#canvas {
+		.container {
+			text-align: center;
+			position: relative;
 			width: 100%;
 			height: 100%;
 		}
-
-		#center_button {
+		.character {
+			display: inline-block;
+			aspect-ratio: 3 / 4;
+			width: 150px;
+			border-radius: 15px;
+			text-align: center;
+			position: relative;
+			color: #111111;
+			margin: 50px;
+			transition: transform 0.25s;
+		}
+		.character span {
 			position: absolute;
-			width: 5vw;
-			height: 5vw;
-			top: 85vh;
-			left: 92vw;
-			background-color: blue;
-			border: 0px;
-			border-radius: 50px;
-			color: white;
-			cursor: pointer;
-			transition: transform 0.5s;
+			bottom: 5%;
+			width: 100%;
+			left: 0;
+			overflow: hidden;
 		}
-		#center_button:hover {
-			transform: scale(1.2);
+		.character img {
+			max-width: 80%;
+			height: 60%;
+			margin: 5% 0%;
 		}
+		.character:hover {
+			transform: scale(1.05);
+		}
+		.male {
+			border: 2px solid blue;
+			background-color: #b7e2fc;
+		}
+		.female {
+			border: 2px solid #e9658d;
+			background-color: #ffe6ee;
+		}
+
+		#svg {
+			z-index: 10;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+		
 	</style> 
 </head>
 <body>
 
-	<button id="center_button"><img src="images/center.png" style="object-fit:contain;width:70%;" onclick="centerCanvas()"></button>
-	<canvas id="canvas"></canvas>
+	<div class="container">
+		<svg id="svg"></svg>
+	</div>
 
 	<script type="text/javascript" src="Load.js"></script>
 	<script type="text/javascript" src="Draw.js"></script>
 	<script type="text/javascript">
 		mtree = new MemberTree();
 		var x = mtree.makeTree('https://raw.githubusercontent.com/MasterSarvagya/FamilyTree/master/data.csv');
-		x.then(res => {
-			prepareCharacterList(res);
-			draw();
-		});
+		x.then(res => prepareElements(res));
 	</script>
 </body>
 </html>
