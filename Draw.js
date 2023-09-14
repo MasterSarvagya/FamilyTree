@@ -11,8 +11,8 @@ function prepareElements(root) {
 			if(partner === undefined)
 				partner = new Member();
 
-			d1 = drawChar(x.first_name + "\n" + x.last_name,x.gender,x.id);
-			d2 = drawChar(partner.first_name + "\n" + partner.last_name,partner.gender,partner.id);
+			d1 = drawChar(x.first_name + "<br>" + x.last_name,x.gender,x.id);
+			d2 = drawChar(partner.first_name + "<br>" + partner.last_name,partner.gender,partner.id);
 
 			container.appendChild(d1);
 			container.appendChild(d2);
@@ -33,6 +33,8 @@ function drawChar(name,gender,id = -100) {
 	var img = document.createElement('img');
 	var text = document.createElement('span');
 	var br = document.createElement('br');
+
+	// name = "ABCD <br> XYZ"
 
 	if(gender == "M") {
 		img.src = "images/male.png";
